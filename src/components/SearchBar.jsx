@@ -26,7 +26,7 @@ const SearchBar = () => {
           onBlur={handleBlur}
           onFocus={() => setShowResults(true)}
           placeholder="Search in the Quran..."
-          className="w-full px-6 py-4 pl-14 rounded-full border-2 border-gray-200 focus:border-primary focus:outline-none transition-colors text-lg"
+          className="w-full px-6 py-4 pl-14 rounded-full border-2 border-gray-200 focus:border-teal-500 focus:outline-none transition-all duration-300 text-lg shadow-md hover:shadow-lg focus:shadow-xl bg-white/90 backdrop-blur-sm"
         />
         <svg
           className="absolute left-5 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400"
@@ -44,11 +44,11 @@ const SearchBar = () => {
       </div>
 
       {showResults && query.trim().length > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 max-h-96 overflow-y-auto z-50">
+        <div className="absolute top-full left-0 right-0 mt-3 bg-white rounded-2xl shadow-2xl border border-teal-100 max-h-96 overflow-y-auto z-50">
           {loading ? (
             <div className="p-8 text-center">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-              <p className="mt-2 text-gray-500">Searching...</p>
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600"></div>
+              <p className="mt-3 text-gray-600 font-medium">Searching...</p>
             </div>
           ) : results.length > 0 ? (
             <div className="divide-y divide-gray-100">
@@ -56,22 +56,22 @@ const SearchBar = () => {
                 <Link
                   key={`${result.surah.number}:${result.numberInSurah}`}
                   to={`/surah/${result.surah.number}`}
-                  className="block p-4 hover:bg-gray-50 transition-colors"
+                  className="block p-5 hover:bg-gradient-to-r hover:from-teal-50 hover:to-cyan-50 transition-all duration-300"
                   onClick={() => setShowResults(false)}
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-xs font-bold text-teal-700 bg-teal-100 px-3 py-1 rounded-full">
                           {result.surah.englishName}
                         </span>
-                        <span className="text-xs text-gray-400">
+                        <span className="text-xs text-gray-500 font-medium">
                           Ayah {result.numberInSurah}
                         </span>
                       </div>
-                      <p className="text-gray-700 line-clamp-2">{result.text}</p>
+                      <p className="text-gray-700 line-clamp-2 leading-relaxed">{result.text}</p>
                     </div>
-                    <span className="text-xs text-gray-400 whitespace-nowrap">
+                    <span className="text-xs text-gray-400 whitespace-nowrap font-medium">
                       {result.surah.englishNameTranslation}
                     </span>
                   </div>
@@ -79,8 +79,11 @@ const SearchBar = () => {
               ))}
             </div>
           ) : (
-            <div className="p-8 text-center text-gray-500">
-              No results found for "{query}"
+            <div className="p-8 text-center">
+              <svg className="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <p className="text-gray-500 font-medium">No results found for "{query}"</p>
             </div>
           )}
         </div>

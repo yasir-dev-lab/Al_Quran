@@ -1,1 +1,38 @@
 @import "tailwindcss";
+
+/* Custom Font Families */
+.font-arabic {
+  font-family: 'Amiri', serif;
+}
+
+/* Base Styles */
+body {
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #0d9488;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #0f766e;
+}
+
+/* Selection Color */
+::selection {
+  background-color: #0d9488;
+  color: white;
+}
