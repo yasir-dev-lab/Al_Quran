@@ -7,15 +7,65 @@ export const fetchSurahs = async () => {
 };
 
 export const fetchAyahs = async (surahNumber) => {
-  const response = await fetch(`${API_BASE}/surah/${surahNumber}`);
+  // Fetch Arabic text and English translation together
+  const response = await fetch(`${API_BASE}/surah/${surahNumber}/editions/quran-uthmani,en.asad`);
   const data = await response.json();
-  return data.data;
+  
+  if (data.code !== 200) {
+    throw new Error(data.status || 'Failed to fetch surah');
+  }
+  
+  const arabicData = data.data[0];
+  const englishData = data.data[1];
+  
+  // Combine Arabic and English texts
+  const combinedAyahs = arabicData.ayahs.map((ayah, index) => ({
+    ...ayah,
+    text: ayah.text,
+    edition: {
+      identifier: arabicData.edition.identifier,
+      language: arabicData.edition.language,
+      name: arabicData.edition.name,
+      englishName: arabicData.edition.englishName,
+      format: arabicData.edition.format,
+      type: arabicData.edition.type,
+      direction: arabicData.edition.direction
+    },
+    englishText: englishData.ayahs[index]?.text || ''
+  }));
+  
+  return {
+    number: arabicData.number,
+    name: arabicData.name,
+    englishName: arabicData.englishName,
+    englishNameTranslation: arabicData.englishNameTranslation,
+    revelationType: arabicData.revelationType,
+    numberOfAyahs: arabicData.numberOfAyahs,
+    ayahs: combinedAyahs
+  };
 };
 
 export const fetchJuz = async (juzNumber) => {
-  const response = await fetch(`${API_BASE}/juz/${juzNumber}`);
+  const response = await fetch(`${API_BASE}/juz/${juzNumber}/editions/quran-uthmani,en.asad`);
   const data = await response.json();
-  return data.data;
+  
+  if (data.code !== 200) {
+    throw new Error(data.status || 'Failed to fetch juz');
+  }
+  
+  const arabicData = data.data[0];
+  const englishData = data.data[1];
+  
+  const combinedAyahs = arabicData.ayahs.map((ayah, index) => ({
+    ...ayah,
+    text: ayah.text,
+    englishText: englishData.ayahs[index]?.text || ''
+  }));
+  
+  return {
+    number: arabicData.number,
+    ayahs: combinedAyahs
+  };
 };
 
 export const searchQuran = async (query) => {

@@ -88,9 +88,9 @@ const SurahPage = () => {
                 </p>
 
                 {/* English Translation */}
-                {ayah.editions && ayah.editions[0] && (
+                {ayah.englishText && (
                   <p className="text-gray-700 leading-relaxed text-lg border-t border-gray-100 pt-4">
-                    {ayah.editions[0].text}
+                    {ayah.englishText}
                   </p>
                 )}
               </div>
