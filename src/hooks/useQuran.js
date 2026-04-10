@@ -24,27 +24,27 @@ export const useSurahs = () => {
 };
 
 export const useSurah = (surahNumber) => {
-  const [ayahs, setAyahs] = useState([]);
+  const [surahData, setSurahData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     if (!surahNumber) return;
 
-    const loadAyahs = async () => {
+    const loadSurah = async () => {
       try {
         const data = await fetchAyahs(surahNumber);
-        setAyahs(data);
+        setSurahData(data);
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-    loadAyahs();
+    loadSurah();
   }, [surahNumber]);
 
-  return { ayahs, loading, error };
+  return { surahData, loading, error };
 };
 
 export const useSearch = (query) => {

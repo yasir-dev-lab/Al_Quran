@@ -3,7 +3,7 @@ import { useSurah } from '../hooks/useQuran';
 
 const SurahPage = () => {
   const { surahNumber } = useParams();
-  const { ayahs, loading, error } = useSurah(surahNumber);
+  const { surahData, loading, error } = useSurah(surahNumber);
 
   if (loading) {
     return (
@@ -29,12 +29,12 @@ const SurahPage = () => {
     );
   }
 
-  if (!ayahs || !ayahs.ayahs) {
+  if (!surahData || !surahData.ayahs) {
     return null;
   }
 
-  const surahInfo = ayahs;
-  const ayahList = ayahs.ayahs;
+  const surahInfo = surahData;
+  const ayahList = surahData.ayahs;
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
@@ -57,8 +57,8 @@ const SurahPage = () => {
         </div>
       </div>
 
-      {/* Bismillah (except for Surah At-Tawbah) */}
-      {surahInfo.number !== 9 && (
+      {/* Bismillah (except for Surah At-Tawbah and Al-Fatihah) */}
+      {surahInfo.number !== 9 && surahInfo.number !== 1 && (
         <div className="text-center mb-10">
           <p className="font-arabic text-5xl text-teal-800 leading-loose bg-white/60 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-teal-100">
             بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ

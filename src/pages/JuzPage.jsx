@@ -5,15 +5,19 @@ const JuzPage = () => {
   const [selectedJuz, setSelectedJuz] = useState(null);
   const [juzData, setJuzData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleJuzSelect = async (juzNumber) => {
     setSelectedJuz(juzNumber);
     setLoading(true);
+    setError(null);
     try {
       const data = await fetchJuz(juzNumber);
       setJuzData(data);
-    } catch (error) {
-      console.error('Error fetching juz:', error);
+    } catch (err) {
+      console.error('Error fetching juz:', err);
+      setError(err.message);
+      setJuzData(null);
     } finally {
       setLoading(false);
     }
@@ -54,6 +58,18 @@ const JuzPage = () => {
         <div className="text-center py-12">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mb-4"></div>
           <p className="text-gray-600 font-medium">Loading Juz...</p>
+        </div>
+      )}
+
+      {error && !loading && (
+        <div className="text-center py-12 bg-red-50 rounded-2xl border-2 border-red-200">
+          <p className="text-red-600 font-semibold text-lg mb-4">Error loading Juz: {error}</p>
+          <button
+            onClick={() => handleJuzSelect(selectedJuz)}
+            className="px-6 py-3 bg-red-600 text-white rounded-xl font-medium hover:bg-red-700 transition-colors"
+          >
+            Try Again
+          </button>
         </div>
       )}
 
