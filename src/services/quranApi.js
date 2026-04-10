@@ -52,27 +52,37 @@ export const fetchAyahs = async (surahNumber) => {
 };
 
 export const fetchJuz = async (juzNumber) => {
-  const response = await fetch(`${API_BASE}/juz/${juzNumber}/editions/quran-uthmani,en.asad`);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch juz ${juzNumber}: ${response.status} ${response.statusText}`);
+  // Fetch Arabic and English separately as the API doesn't support multiple editions for juz
+  const [arabicResponse, englishResponse] = await Promise.all([
+    fetch(`${API_BASE}/juz/${juzNumber}/quran-uthmani`),
+    fetch(`${API_BASE}/juz/${juzNumber}/en.asad`)
+  ]);
+  
+  if (!arabicResponse.ok) {
+    throw new Error(`Failed to fetch juz ${juzNumber} (Arabic): ${arabicResponse.status} ${arabicResponse.statusText}`);
   }
-  const data = await response.json();
-  
-  if (data.code !== 200) {
-    throw new Error(data.status || 'Failed to fetch juz');
+  if (!englishResponse.ok) {
+    throw new Error(`Failed to fetch juz ${juzNumber} (English): ${englishResponse.status} ${englishResponse.statusText}`);
   }
   
-  const arabicData = data.data[0];
-  const englishData = data.data[1];
+  const arabicData = await arabicResponse.json();
+  const englishData = await englishResponse.json();
   
-  const combinedAyahs = arabicData.ayahs.map((ayah, index) => ({
+  if (arabicData.code !== 200) {
+    throw new Error(arabicData.status || 'Failed to fetch juz (Arabic)');
+  }
+  if (englishData.code !== 200) {
+    throw new Error(englishData.status || 'Failed to fetch juz (English)');
+  }
+  
+  const combinedAyahs = arabicData.data.ayahs.map((ayah, index) => ({
     ...ayah,
     text: ayah.text,
-    englishText: englishData.ayahs[index]?.text || ''
+    englishText: englishData.data.ayahs[index]?.text || ''
   }));
   
   return {
-    number: arabicData.number,
+    number: arabicData.data.number,
     ayahs: combinedAyahs
   };
 };
