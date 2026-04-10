@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useSearch } from '../hooks/useQuran';
 import { Link } from 'react-router-dom';
 
@@ -6,6 +6,15 @@ const SearchBar = () => {
   const [query, setQuery] = useState('');
   const { results, loading } = useSearch(query);
   const [showResults, setShowResults] = useState(false);
+  const blurTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (blurTimeoutRef.current) {
+        clearTimeout(blurTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleInputChange = (e) => {
     setQuery(e.target.value);
@@ -13,7 +22,7 @@ const SearchBar = () => {
   };
 
   const handleBlur = () => {
-    setTimeout(() => setShowResults(false), 200);
+    blurTimeoutRef.current = setTimeout(() => setShowResults(false), 200);
   };
 
   return (
@@ -54,8 +63,8 @@ const SearchBar = () => {
             <div className="divide-y divide-gray-100">
               {results.slice(0, 10).map((result, index) => (
                 <Link
-                  key={`${result.surah.number}:${result.numberInSurah}`}
-                  to={`/surah/${result.surah.number}`}
+                  key={`${result.surah?.number || index}:${result.numberInSurah}`}
+                  to={`/surah/${result.surah?.number || 1}`}
                   className="block p-5 hover:bg-gradient-to-r hover:from-teal-50 hover:to-cyan-50 transition-all duration-300"
                   onClick={() => setShowResults(false)}
                 >
@@ -63,7 +72,7 @@ const SearchBar = () => {
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
                         <span className="text-xs font-bold text-teal-700 bg-teal-100 px-3 py-1 rounded-full">
-                          {result.surah.englishName}
+                          {result.surah?.englishName || 'Unknown'}
                         </span>
                         <span className="text-xs text-gray-500 font-medium">
                           Ayah {result.numberInSurah}
@@ -72,7 +81,7 @@ const SearchBar = () => {
                       <p className="text-gray-700 line-clamp-2 leading-relaxed">{result.text}</p>
                     </div>
                     <span className="text-xs text-gray-400 whitespace-nowrap font-medium">
-                      {result.surah.englishNameTranslation}
+                      {result.surah?.englishNameTranslation || ''}
                     </span>
                   </div>
                 </Link>
